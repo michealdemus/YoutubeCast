@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My Chromecast Receiver App</title>
+    <style>
+      /* Add your CSS styles here */
+      #player {
+        width: 640px;
+        height: 360px;
+      }
+      button {
+        margin: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="player"></div>
+    <button id="playButton">Play</button>
+    <button id="pauseButton">Pause</button>
+    <button id="nextButton">Next</button>
+
+    <script>
+      // Initialize YouTube API and player
+      var tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      var player;
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+          height: '360',
+          width: '640',
+          videoId: 'VIDEO_ID',
+          events: {
+            'onReady': onPlayerReady,
+          }
+        });
+      }
+
+      function onPlayerReady(event) {
+        event.target.playVideo();
+      }
+
+      // Controls
+      document.getElementById('playButton').addEventListener('click', function() {
+        player.playVideo();
+      });
+
+      document.getElementById('pauseButton').addEventListener('click', function() {
+        player.pauseVideo();
+      });
+
+      document.getElementById('nextButton').addEventListener('click', function() {
+        // Logic to play the next video
+      });
+    </script>
+  </body>
+</html>
