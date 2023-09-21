@@ -12,6 +12,7 @@
         margin: 5px;
       }
     </style>
+    <script src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
   </head>
   <body>
     <div id="player"></div>
@@ -54,6 +55,18 @@
       document.getElementById('nextButton').addEventListener('click', function() {
         // Logic to play the next video
       });
+
+      // Initialize Cast receiver manager
+      const context = cast.framework.CastReceiverContext.getInstance();
+      
+      context.addCustomMessageListener('urn:x-cast:com.example.custom', function(customEvent) {
+        if (customEvent.data && customEvent.data.videoId) {
+          player.loadVideoById(customEvent.data.videoId);
+        }
+      });
+
+      // Start the Cast receiver manager
+      context.start();
     </script>
   </body>
 </html>
