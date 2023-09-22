@@ -2,70 +2,27 @@
 <html>
   <head>
     <title>My Chromecast Receiver App</title>
-    <style>
-      /* Add your CSS styles here */
-      #player {
-        width: 640px;
-        height: 360px;
-      }
-      button {
-        margin: 5px;
-      }
-    </style>
-    <script src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
+    <script type="text/javascript" src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
   </head>
   <body>
-    <div id="player"></div>
-    <button id="playButton">Play</button>
-    <button id="pauseButton">Pause</button>
-    <button id="nextButton">Next</button>
+    <video id="videoElement"></video>
 
     <script>
-      // Initialize YouTube API and player
-      var tag = document.createElement('script');
-      tag.src = "https://www.youtube.com/iframe_api";
-      var firstScriptTag = document.getElementsByTagName('script')[0];
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-      var player;
-      function onYouTubeIframeAPIReady() {
-        player = new YT.Player('player', {
-          height: '360',
-          width: '640',
-          videoId: 'VIDEO_ID',
-          events: {
-            'onReady': onPlayerReady,
-          }
-        });
-      }
-
-      function onPlayerReady(event) {
-        event.target.playVideo();
-      }
-
-      // Controls
-      document.getElementById('playButton').addEventListener('click', function() {
-        player.playVideo();
-      });
-
-      document.getElementById('pauseButton').addEventListener('click', function() {
-        player.pauseVideo();
-      });
-
-      document.getElementById('nextButton').addEventListener('click', function() {
-        // Logic to play the next video
-      });
-
-      // Initialize Cast receiver manager
+      // Inicjalizacja API Google Cast Receiver
       const context = cast.framework.CastReceiverContext.getInstance();
-      
-      context.addCustomMessageListener('urn:x-cast:com.example.custom', function(customEvent) {
-        if (customEvent.data && customEvent.data.videoId) {
-          player.loadVideoById(customEvent.data.videoId);
-        }
-      });
+      const playerManager = context.getPlayerManager();
 
-      // Start the Cast receiver manager
+      // Obsługa zdarzeń związanych z odtwarzaczem
+      playerManager.setMessageInterceptor(
+        cast.framework.messages.MessageType.LOAD,
+        loadRequestData => {
+          const videoElement = document.getElementById('videoElement');
+          videoElement.src = `https://www.youtube.com/embed/${loadRequestData.media.contentId}`;
+          return loadRequestData;
+        }
+      );
+
+      // Uruchomienie aplikacji odbiorczej
       context.start();
     </script>
   </body>
