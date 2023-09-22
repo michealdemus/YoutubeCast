@@ -3,6 +3,7 @@
   <head>
     <title>My Chromecast Receiver App</title>
     <script type="text/javascript" src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
   </head>
   <body>
     <video id="videoElement"></video>
@@ -24,6 +25,20 @@
 
       // Uruchomienie aplikacji odbiorczej
       context.start();
+
+      // Inicjalizacja Pusher
+      var pusher = new Pusher('b6492e660fdf8bd726f5', {
+        cluster: 'eu'
+      });
+
+      // Subskrypcja kanału i zdarzenia
+      var channel = pusher.subscribe('my-channel');
+      channel.bind('my-event', function(data) {
+        const videoId = data.videoId;
+        // Odtworzenie filmu
+        const videoElement = document.getElementById('videoElement');
+        videoElement.src = `https://www.youtube.com/embed/${videoId}`;
+      });
     </script>
   </body>
 </html>
