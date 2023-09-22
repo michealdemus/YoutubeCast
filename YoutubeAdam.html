@@ -6,9 +6,8 @@
     <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
   </head>
   <body>
-    <h1>saddsasda</h1>
-    
     <video id="videoElement"></video>
+    <h1 id="debugInfo">Oczekiwanie na dane...</h1> <!-- Dodany identyfikator do elementu h1 -->
 
     <script>
       // Inicjalizacja API Google Cast Receiver
@@ -21,6 +20,7 @@
         loadRequestData => {
           const videoElement = document.getElementById('videoElement');
           videoElement.src = `https://www.youtube.com/embed/${loadRequestData.media.contentId}`;
+          document.getElementById("debugInfo").innerText = "Otrzymano dane z Chromecast: " + JSON.stringify(loadRequestData); // Aktualizacja elementu h1
           return loadRequestData;
         }
       );
@@ -29,7 +29,7 @@
       context.start();
 
       // Inicjalizacja Pusher
-      var pusher = new Pusher('b6492e660fdf8bd726f5', {
+      var pusher = new Pusher('dd9c0093a77f8814a7bd', {
         cluster: 'eu'
       });
 
@@ -37,6 +37,7 @@
       var channel = pusher.subscribe('my-channel');
       channel.bind('my-event', function(data) {
         const videoId = data.videoId;
+        document.getElementById("debugInfo").innerText = "Otrzymano dane z Pusher: " + JSON.stringify(data); // Aktualizacja elementu h1
         // Odtworzenie filmu
         const videoElement = document.getElementById('videoElement');
         videoElement.src = `https://www.youtube.com/embed/${videoId}`;
